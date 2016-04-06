@@ -38,10 +38,7 @@ module KairosDB
       private
 
       def fetch_metrics(response)
-        response.
-          fetch('queries', []).
-          fetch(0, []).
-          fetch('results', [])
+        response.fetch('queries', [])
       end
 
       def full_path(path, params = {})
