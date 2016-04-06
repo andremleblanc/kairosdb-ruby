@@ -7,13 +7,13 @@ RSpec.shared_examples 'for_query_core' do
     let(:widgets) {{ name: measurement_name, tags: tags }}
     let(:metrics) { [widgets] }
     let(:query) {{ start_relative: time, metrics: metrics }}
-    let(:stub_path) { subject.send(:full_path, KairosDB::Query::Core::KAIROSDB_GET_PATH, query) }
+    let(:stub_path) { subject.send(:full_path, KairosDB::Query::Core::KAIROSDB_QUERY_PATH) }
     let(:stub_url) { 'http://localhost:8080' + stub_path }
 
     let(:response_tags) {{ 'owner' => [ 'Wile E' ] }}
     let(:response_values) { [[time, 10]] }
     let(:results) {{ 'name' => measurement_name, 'tags' => response_tags, 'values' => response_values }}
-    let(:metric) {{ results: results }}
+    let(:metric) {{ 'results' => results }}
     let(:metrics) { [metric] }
     let(:queries) {{ queries: metrics }}
     let(:response) {{ body: JSON.generate(queries) }}
