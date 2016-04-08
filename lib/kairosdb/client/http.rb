@@ -55,7 +55,7 @@ module KairosDB
     end
 
     def parsed_response(response)
-      (response.body && response.body.try(:[], 'errors').nil?) ? JSON.parse(response.body) : response
+      response.body ? JSON.parse(response.body) : response
     end
 
     def resolve_error(response)
