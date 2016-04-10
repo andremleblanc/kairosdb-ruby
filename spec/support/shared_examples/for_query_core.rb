@@ -7,13 +7,13 @@ RSpec.shared_examples 'for_query_core' do
     let(:widgets) {{ name: measurement_name, tags: tags }}
     let(:metrics) { [widgets] }
     let(:query) {{ start_relative: time, metrics: metrics }}
-    let(:stub_path) { subject.send(:full_path, KairosDB::Query::Core::KAIROSDB_GET_PATH, query) }
+    let(:stub_path) { subject.send(:full_path, KairosDB::Query::Core::KAIROSDB_QUERY_PATH) }
     let(:stub_url) { 'http://localhost:8080' + stub_path }
 
     let(:response_tags) {{ 'owner' => [ 'Wile E' ] }}
     let(:response_values) { [[time, 10]] }
     let(:results) {{ 'name' => measurement_name, 'tags' => response_tags, 'values' => response_values }}
-    let(:metric) {{ results: results }}
+    let(:metric) {{ 'results' => results }}
     let(:metrics) { [metric] }
     let(:queries) {{ queries: metrics }}
     let(:response) {{ body: JSON.generate(queries) }}
@@ -24,15 +24,17 @@ RSpec.shared_examples 'for_query_core' do
     let(:error_response) {{ body: JSON.generate(errors), status: 400 }}
 
     context 'with a single metric' do
-      it 'makes a successful GET request to the correct endpoint' do
-        stub_request(:get, stub_url).to_return(response)
-        expect(subject.query(query)).to eq results
+      it 'makes a successful POST request to the correct endpoint' do
+        stub_request(:post, stub_url).
+          with(body: JSON.generate(query), headers: { 'Content-Type'=>'application/json' }).
+          to_return(response)
+        expect(subject.query(query)).to eq metrics
       end
     end
 
     context 'with a query error' do
-      it 'makes an usuccessful GET request to the correct endpoint' do
-        stub_request(:get, stub_url).to_return(error_response)
+      it 'makes an unsuccessful POST request to the correct endpoint' do
+        stub_request(:post, stub_url).to_return(error_response)
         expect{ subject.query(query)}.to raise_error(KairosDB::QueryError, errors[:errors])
       end
     end

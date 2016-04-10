@@ -3,13 +3,14 @@ require 'json'
 module KairosDB
   module Query
     module Core
-      KAIROSDB_GET_PATH = '/api/v1/datapoints/query'
-      KAIROSDB_POST_PATH = '/api/v1/datapoints'
+      KAIROSDB_DELETE_PATH = '/api/v1/metric'
+      KAIROSDB_QUERY_PATH = '/api/v1/datapoints/query'
+      KAIROSDB_WRITE_PATH = '/api/v1/datapoints'
 
       # @param [Hash] opts
       def query(opts = {})
-        url = full_path(KAIROSDB_GET_PATH, opts)
-        metrics = fetch_metrics(get(url))
+        url = full_path(KAIROSDB_QUERY_PATH)
+        metrics = fetch_metrics(post(url, opts))
 
         if block_given?
           metrics.each do |metric|
@@ -31,17 +32,14 @@ module KairosDB
       protected
 
       def write(data)
-        url = full_path(KAIROSDB_POST_PATH)
+        url = full_path(KAIROSDB_WRITE_PATH)
         post(url, data)
       end
 
       private
 
       def fetch_metrics(response)
-        response.
-          fetch('queries', []).
-          fetch(0, []).
-          fetch('results', [])
+        response.fetch('queries', [])
       end
 
       def full_path(path, params = {})

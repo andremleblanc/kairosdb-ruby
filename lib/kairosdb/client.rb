@@ -5,6 +5,7 @@ module KairosDB
     include KairosDB::HTTP
     include KairosDB::Logging
     include KairosDB::Query::Core
+    include KairosDB::Query::Metrics
 
     # (see KairosDB::Config#initialize)
     # @example

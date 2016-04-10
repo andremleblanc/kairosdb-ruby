@@ -1,8 +1,9 @@
 module KairosDB
   module HTTP
-    def get(url)
+    def post(url, data)
+      headers = { 'Content-Type' => 'application/json' }
       connect_with_retry do |http|
-        response = do_request http, Net::HTTP::Get.new(url)
+        response = do_request http, Net::HTTP::Post.new(url, headers), JSON.generate(data)
         if response.is_a? Net::HTTPSuccess
           handle_successful_response(response)
         else
@@ -11,12 +12,13 @@ module KairosDB
       end
     end
 
-    def post(url, data)
-      headers = { 'Content-Type' => 'application/json' }
+    def delete(url)
       connect_with_retry do |http|
-        response = do_request http, Net::HTTP::Post.new(url, headers), JSON.generate(data)
+        response = do_request http, Net::HTTP::Delete.new(url)
         if response.is_a? Net::HTTPSuccess
-          return response
+          handle_successful_response(response)
+        elsif response.is_a? Net::HTTPNotFound
+          false
         else
           resolve_error(response)
         end
@@ -66,7 +68,7 @@ module KairosDB
     end
 
     def parsed_response(response)
-      JSON.parse(response.body) if response.body
+      response.body ? JSON.parse(response.body) : response
     end
 
     def resolve_error(response)

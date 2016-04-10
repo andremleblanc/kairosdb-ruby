@@ -1,19 +1,6 @@
 RSpec.shared_examples 'for_client_http' do
-  describe '#get' do
-    let(:path) { KairosDB::Query::Core::KAIROSDB_GET_PATH }
-    let(:stub_url) { 'http://localhost:8080' + path }
-    let(:get_url) { subject.send(:full_path, path) }
-
-    context 'without retry' do
-      it 'sends a successful GET to the correct endpoint' do
-        stub_request(:get, stub_url)
-        expect(subject.get(get_url)).to be nil
-      end
-    end
-  end
-
   describe '#post' do
-    let(:path) { KairosDB::Query::Core::KAIROSDB_POST_PATH }
+    let(:path) { KairosDB::Query::Core::KAIROSDB_WRITE_PATH }
     let(:stub_url) { 'http://localhost:8080' + path }
     let(:post_url) { subject.send(:full_path, path) }
 

@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'support/shared_examples/for_client_http'
 require 'support/shared_examples/for_logging'
 require 'support/shared_examples/for_query_core'
+require 'support/shared_examples/for_query_metrics'
 
 describe KairosDB::Client do
   subject { KairosDB::Client.new(opts) }
@@ -12,6 +13,7 @@ describe KairosDB::Client do
   include_examples 'for_query_core' do
     let(:opts) { Hash.new }
   end
+  include_examples 'for_query_metrics'
 
   describe '.new' do
     context 'with no parameters specified' do
