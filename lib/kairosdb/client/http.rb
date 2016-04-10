@@ -12,6 +12,19 @@ module KairosDB
       end
     end
 
+    def delete(url)
+      connect_with_retry do |http|
+        response = do_request http, Net::HTTP::Delete.new(url)
+        if response.is_a? Net::HTTPSuccess
+          handle_successful_response(response)
+        elsif response.is_a? Net::HTTPNotFound
+          false
+        else
+          resolve_error(response)
+        end
+      end
+    end
+
     private
 
     def connect_with_retry(&block)

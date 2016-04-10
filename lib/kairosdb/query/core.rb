@@ -3,6 +3,7 @@ require 'json'
 module KairosDB
   module Query
     module Core
+      KAIROSDB_DELETE_PATH = '/api/v1/metric'
       KAIROSDB_QUERY_PATH = '/api/v1/datapoints/query'
       KAIROSDB_WRITE_PATH = '/api/v1/datapoints'
 
